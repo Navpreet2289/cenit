@@ -1,7 +1,6 @@
 version: '3.7'
 
 volumes:
-  # We'll define a volume that will store the data from the mongo databases:
   mongodb-data: {}
   redis-data: {}
 
@@ -22,7 +21,7 @@ services:
       - mongodb
       - rabbitmq
       - redis
-    command: ["foreman", "start", "-f", "Procfile"]
+    command: ["./wait-for-it.sh", "rabbitmq:5672", "--timeout=120", "--strict",  "--", "foreman", "start", "-f", "Procfile"]
 
   rabbitmq:
     image: rabbitmq:management
@@ -39,7 +38,6 @@ services:
   mongodb:
     image: mongo:3.2
     volumes:
-      # We'll mount the 'mongodb-data' volume into the location mongodb stores it's data:
       - mongodb-data:/data/db
 
   redis:
